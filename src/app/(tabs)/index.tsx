@@ -1,6 +1,11 @@
 import { View, Text, FlatList, Pressable} from "react-native"
 import { SafeAreaView, StatusBar, StyleSheet } from "react-native"
 import { Header } from "@/src/app/(tabs)/components/header"
+import { useState } from "react";
+import { Filter } from "./components/filter";
+import { Filters } from "./components/filters";
+
+import { FilterProps } from "./components/filters/filters.t";
 
 const data = [
     {id: 1, noteName: "note01", section: "all"},
@@ -16,7 +21,7 @@ const data = [
     {id: 11, noteName: "note11", section: "all"}
 ];
 
-const sections = [
+export const FILTERS = [
     "all",
     "section01"
 ]
@@ -33,23 +38,15 @@ for ( var c = 0; c < data.length; c++ ) {
 
 
 export default function HomeScreen() {
+    
+    const [filter, setFilter] = useState(FILTERS[0])
+
     return (
         
         <View>
-
             <StatusBar barStyle={"dark-content"} translucent={true} backgroundColor="transparent" />
-
             <Header/>
-
-            <FlatList
-            data={sections}
-            renderItem={({item}) => <View style={{marginLeft: 40}}>
-                <Pressable style={{padding: 40, borderColor: "green"}} ></Pressable>
-                <Text onPress={ () => console.log(item)} style={styles.default} >{item}</Text>
-            </View>}
-            horizontal={true}
-            />
-
+            <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
             <FlatList
             data={data}
             renderItem={({item}) => <View>
@@ -57,7 +54,6 @@ export default function HomeScreen() {
                 
             </View>}
             />
-
         </View>
     
     )
@@ -70,4 +66,11 @@ const styles = StyleSheet.create({
     selected: {
         backgroundColor: "red"
     },
+    btn: {
+        backgroundColor: "red"
+    },
+    btnText: {
+        color: "white"
+    }
+    
 })
