@@ -4,7 +4,7 @@ import { Header } from "@/src/app/(tabs)/components/header"
 import { useState } from "react";
 import { Filter } from "./components/filter";
 import { Filters } from "./components/filters";
-
+import { FILTERS } from "@/src/database/staticData/filter/filterData";
 import { FilterProps } from "./components/filters/filters.t";
 
 const data = [
@@ -21,21 +21,24 @@ const data = [
     {id: 11, noteName: "note11", section: "all"}
 ];
 
-export const FILTERS = [
-    "all",
-    "section01"
+/* Getting the currenty date */
+
+
+const dd = [
+	{id: 1, name: "Jhon Doe"},
+	{id: 2, name: "Viktor Rob"},
+	{id: 3, name: "Mordekaiser"}
 ]
 
-
-console.log(data[0].noteName)
-
-for ( var c = 0; c < data.length; c++ ) {
-    if (data[c].section == "all") {
-        console.log(data[c].section)
-    }
-    console.log(data[c].noteName)
+for ( let c = 0; c < dd.length; c++ ) {
+    console.log(dd[c].name)
 }
 
+const date = new Date();
+
+const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
+
+console.log(currentyDate)
 
 export default function HomeScreen() {
     
