@@ -1,11 +1,15 @@
 import { View, Text, FlatList, Pressable} from "react-native"
 import { SafeAreaView, StatusBar, StyleSheet } from "react-native"
 import { Header } from "@/src/app/(tabs)/components/header"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Filter } from "./components/filter";
 import { Filters } from "./components/filters";
 import { FILTERS } from "@/src/database/staticData/filter/filterData";
 import { FilterProps } from "./components/filters/filters.t";
+import { AllNotes } from "@/src/database/staticData/recents/recentsData";
+
+import { RecentsNotes } from "./components/recent/recents";
+import { expNewObjectData } from "./components/recent/recents";
 
 const data = [
     {id: 1, noteName: "note01", section: "all"},
@@ -34,6 +38,7 @@ for ( let c = 0; c < dd.length; c++ ) {
     console.log(dd[c].name)
 }
 
+
 const date = new Date();
 
 const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
@@ -50,13 +55,7 @@ export default function HomeScreen() {
             <StatusBar barStyle={"dark-content"} translucent={true} backgroundColor="transparent" />
             <Header/>
             <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
-            <FlatList
-            data={data}
-            renderItem={({item}) => <View>
-                <Text onPress={ () => console.log(item.noteName)} style={{marginLeft: 30}} >{item.noteName + " " + item.section}</Text>
-                
-            </View>}
-            />
+            <RecentsNotes/>
         </View>
     
     )
