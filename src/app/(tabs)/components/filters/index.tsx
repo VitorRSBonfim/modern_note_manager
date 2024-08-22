@@ -1,5 +1,4 @@
 import { FlatList } from "react-native";
-import { FILTERS } from "../..";
 import { Filter } from "../filter";
 import { styles } from "./styles";
 import { FilterProps } from "./filters.t";

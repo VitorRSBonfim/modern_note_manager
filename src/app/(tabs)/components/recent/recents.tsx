@@ -3,6 +3,9 @@ import { StyleSheet } from "react-native"
 import { AllNotes } from "@/src/database/staticData/recents/recentsData"
 import { useState } from "react"
 import { useEffect } from "react"
+import { Modal } from "react-native"
+import { Pressable, Alert } from "react-native"
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons"
 
 /* 
 
@@ -61,17 +64,87 @@ console.log(newObjectData)
 
 
 export function RecentsNotes() {
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+
     return (
-        <View>
-            <Text>
-                RECENTNotes
-            </Text>
-            <FlatList
-            data={expNewObjectData}
-            renderItem={({item}) => <Text>{item.id}</Text>}
-            keyExtractor={item => String(item.id)}
-            horizontal
-            />
-        </View>
+       
+           
+            <View>
+
+                <Text style={styles.txtTittle}>
+                    Recent
+                </Text>
+                <Pressable onPress={() => {console.log("mostrar nota")}}>
+                    <FlatList
+                    data={expNewObjectData}
+                    renderItem={({item}) =>
+                    <View style={styles.containerNote}>
+                       
+                        <Text style={styles.txtNoteTittle}>
+                            {item.noteName}
+                        </Text>
+                        <Text style={styles.txtNoteContent}>
+                            {item.noteContent}
+                        </Text>
+                        <View style={{flex: 1, alignItems: "flex-end",justifyContent: "space-between", width: "100%", flexDirection: "row"}}>
+                            <Pressable style={styles.containerPressableDelete} onPress={() => console.log("Delete")}>
+                                <MaterialCommunityIcons name="delete-empty-outline" size={20} color={"#7A4ED9"}/>
+                            </Pressable>
+                            <Text style={{marginRight: 4, color: "#FFFFFF", fontSize: 12}}>{item.noteDate}</Text>
+                        </View>
+                    </View>
+                    }
+                    keyExtractor={item => String(item.id)}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.containerList}
+                    />
+                </Pressable>
+            </View>
+     
     )
 }
+
+const styles = StyleSheet.create({
+    containerList: {
+        gap: 8,
+        marginLeft: 20,
+        marginRight: 20,
+        marginBottom: 20
+    },
+    containerNote: {
+        backgroundColor: "#7A4ED9", // Definida pelo usuario futuramente
+        minWidth: 200,
+        minHeight: 200,
+        maxWidth: 200,
+        maxHeight: 200,
+        borderRadius: 10,
+        alignItems: "flex-start",
+    },
+    txtTittle: {
+        marginTop: 8,
+        marginLeft: 20,
+        marginBottom: 8
+    },
+    txtNoteTittle: {
+        color: "#FFFFFF",
+        fontSize: 20,
+        fontFamily: "Roboto",
+        marginLeft: 4
+    },
+    txtNoteContent: {
+        color: "#FFFFFF",
+        fontSize: 12,
+        fontFamily: "Roboto",
+        marginLeft: 4
+    },
+    containerPressableDelete: {
+        backgroundColor: "#FFFFFF",
+        padding: 12,
+        borderRadius: 100,
+        marginLeft: 4,
+        marginBottom: 4
+    }
+}) 

@@ -11,6 +11,8 @@ import { AllNotes } from "@/src/database/staticData/recents/recentsData";
 import { RecentsNotes } from "./components/recent/recents";
 import { expNewObjectData } from "./components/recent/recents";
 
+import { OlderNotes } from "./components/oldersNotes/older";
+
 const data = [
     {id: 1, noteName: "note01", section: "all"},
     {id: 2, noteName: "note02", section: "sectionMy"},
@@ -45,9 +47,11 @@ const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullY
 
 console.log(currentyDate)
 
+
 export default function HomeScreen() {
     
     const [filter, setFilter] = useState(FILTERS[0])
+    
 
     return (
         
@@ -56,6 +60,7 @@ export default function HomeScreen() {
             <Header/>
             <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
             <RecentsNotes/>
+            <OlderNotes/>
         </View>
     
     )
