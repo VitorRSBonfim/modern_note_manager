@@ -1,5 +1,5 @@
 import { View, Text, FlatList, Pressable} from "react-native"
-import { SafeAreaView, StatusBar, StyleSheet } from "react-native"
+import { StatusBar, StyleSheet } from "react-native"
 import { Header } from "@/src/app/(tabs)/components/header"
 import { useState, useEffect } from "react";
 import { Filter } from "./components/filter";
@@ -7,10 +7,10 @@ import { Filters } from "./components/filters";
 import { FILTERS } from "@/src/database/staticData/filter/filterData";
 import { FilterProps } from "./components/filters/filters.t";
 import { AllNotes } from "@/src/database/staticData/recents/recentsData";
-
+import { SafeAreaView } from "react-native";
 import { RecentsNotes } from "./components/recent/recents";
 import { expNewObjectData } from "./components/recent/recents";
-
+import { ScrollView } from "react-native";
 import { OlderNotes } from "./components/oldersNotes/older";
 
 const data = [
@@ -54,15 +54,21 @@ export default function HomeScreen() {
     
 
     return (
-        
-        <View>
-            <StatusBar barStyle={"dark-content"} translucent={true} backgroundColor="transparent" />
-            <Header/>
-            <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
-            <RecentsNotes/>
-            <OlderNotes/>
-        </View>
-    
+        <SafeAreaView style={{flex: 1}}>
+            <View style={{height: "100%"}}>
+                <StatusBar barStyle={"dark-content"} translucent={true} backgroundColor="transparent" />
+                <Header/>
+                <View>
+                    <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
+                </View>
+            
+                <RecentsNotes/>
+                <Text>
+                    Older Notes
+                </Text>
+                <OlderNotes/>
+            </View>
+        </SafeAreaView>
     )
 }
 

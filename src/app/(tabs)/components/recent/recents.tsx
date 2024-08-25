@@ -36,30 +36,30 @@ const newObjectData = []
 
 
 
-for ( let c = 0; c < AllNotes.length; c++) {
-    if (true) {
-        let tDay = AllNotes[c].noteDate.slice(0, 2)
-        let tMonth = AllNotes[c].noteDate.slice(3, 5)
-        let tYear = AllNotes[c].noteDate.slice(6, 10)
+for ( let c = 0; c < 4; c++) {
+    
         
+    let tDay = AllNotes[c].noteDate.slice(0, 2)
+    let tMonth = AllNotes[c].noteDate.slice(3, 5)
+    let tYear = AllNotes[c].noteDate.slice(6, 10)
+    
+    console.log(tDay, tMonth, tYear)
 
-        if ( parseInt(tYear) === currentyYear && parseInt(tMonth) > currentyMonth - 3 && parseInt(tDay) > currentyDay - 3 ) {
-            
-            
-            newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState})
-            console.log(c)
+    if ( parseInt(tYear) === currentyYear && parseInt(tMonth) === currentyMonth + 1 && parseInt(tDay) >= currentyDay - 2 ) {
+        
+        newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState})
+        console.log(c)
 
+    } 
         
-        } 
-        
-    }
 }
-
+ 
 export const expNewObjectData = newObjectData
 
 
 
-console.log(newObjectData)
+console.log(expNewObjectData)
+
 
 
 
@@ -107,11 +107,12 @@ export function RecentsNotes() {
     )
 }
 
+
 const styles = StyleSheet.create({
     containerList: {
         gap: 8,
-        marginLeft: 20,
-        marginRight: 20,
+        paddingLeft: 18,
+        paddingRight: 18,
         marginBottom: 20
     },
     containerNote: {
@@ -122,11 +123,14 @@ const styles = StyleSheet.create({
         maxHeight: 200,
         borderRadius: 10,
         alignItems: "flex-start",
+        marginLeft: 2,
+        marginRight: 2,
     },
     txtTittle: {
         marginTop: 8,
         marginLeft: 20,
-        marginBottom: 8
+        marginBottom: 8,
+        fontSize: 14
     },
     txtNoteTittle: {
         color: "#FFFFFF",
