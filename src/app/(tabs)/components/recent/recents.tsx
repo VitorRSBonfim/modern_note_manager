@@ -36,19 +36,19 @@ const newObjectData = []
 
 
 
-for ( let c = 0; c < 4; c++) {
+for ( let c = 0; c < AllNotes.length; c++) {
     
         
     let tDay = AllNotes[c].noteDate.slice(0, 2)
     let tMonth = AllNotes[c].noteDate.slice(3, 5)
     let tYear = AllNotes[c].noteDate.slice(6, 10)
     
-    console.log(tDay, tMonth, tYear)
-
+    
+ 
     if ( parseInt(tYear) === currentyYear && parseInt(tMonth) === currentyMonth + 1 && parseInt(tDay) >= currentyDay - 2 ) {
         
         newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState})
-        console.log(c)
+        
 
     } 
         

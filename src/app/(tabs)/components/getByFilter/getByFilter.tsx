@@ -1,21 +1,37 @@
-import { View, Text, FlatList, Pressable } from "react-native"
+import { View, Text, StatusBar } from "react-native"
+import { FlatList } from "react-native"
 import { AllNotes } from "@/src/database/staticData/recents/recentsData"
+import { HomeComp } from "../homeScreen/homeScreen"
 import { StyleSheet } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { AntDesign, FontAwesome } from "@expo/vector-icons"
+import { Pressable } from "react-native"
+import { MaterialCommunityIcons } from "@expo/vector-icons"
 
-type GetBySection = {
+type GetSecProps = {
     filter: String
 }
 
-var newArray = [{}]
+// const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
 
+function GetSec({filter}: GetSecProps) {
 
-export function OlderNotes() {
-    return (     
-        <FlatList
-            data={AllNotes}
-            renderItem={({item}) =>
+    const newObjectData = []
+
+    console.log("Chegou " + filter)
+
+    for ( let c = 0; c < AllNotes.length; c++) {
+        if (AllNotes[c].section == filter) {
+            newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState, section: AllNotes[c].noteState})
+            
+        }
+    }
+
+    const expNewObjectData = newObjectData
+
+    if (filter != "all") {
+        return (
+            <FlatList
+            data={newObjectData}
+            renderItem={({item}) => (
                 <View style={styles.container}>
                     <Pressable onPress={() => {console.log("ABRIR NOTA")}}>
                     <View style={styles.containerNote}>
@@ -44,13 +60,33 @@ export function OlderNotes() {
                     </Pressable>
 
                 </View>
-            }
+            )}/>
+        )
+    } else if (filter == "all") {
+        return (
+            <HomeComp/>
+        )
+    }
+
+    for ( let c = 0; c < AllNotes.length; c++) {
+    
+
+        if (AllNotes[c].section == filter) {
             
-            keyExtractor={item => String(item.id)}
-            showsVerticalScrollIndicator={false}
-        />
+            // newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState})
+            console.log(AllNotes[c].noteContent)
+            
+        }        
+    }   
+}
+
+
+export function SecScreen({filter}: GetSecProps) {
+    return (
+        <GetSec filter={filter}/>
     )
 }
+
 
 const styles = StyleSheet.create({
     container: {

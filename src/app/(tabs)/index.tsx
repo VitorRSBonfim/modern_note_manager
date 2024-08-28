@@ -11,7 +11,10 @@ import { SafeAreaView } from "react-native";
 import { RecentsNotes } from "./components/recent/recents";
 import { expNewObjectData } from "./components/recent/recents";
 import { ScrollView } from "react-native";
-import { OlderNotes } from "./components/oldersNotes/older";
+import { SecScreen } from "./components/getByFilter/getByFilter";
+
+import { HomeComp } from "./components/homeScreen/homeScreen";
+
 
 const data = [
     {id: 1, noteName: "note01", section: "all"},
@@ -47,6 +50,11 @@ const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullY
 
 console.log(currentyDate)
 
+type GetSecProps = {
+    filter: String
+}
+
+
 
 export default function HomeScreen() {
     
@@ -54,20 +62,13 @@ export default function HomeScreen() {
     
 
     return (
-        <SafeAreaView style={{flex: 1}}>
-            <View style={{height: "100%"}}>
-                <StatusBar barStyle={"dark-content"} translucent={true} backgroundColor="transparent" />
-                <Header/>
-                <View>
-                    <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
-                </View>
-            
-                <RecentsNotes/>
-                <Text>
-                    Older Notes
-                </Text>
-                <OlderNotes/>
+        <SafeAreaView style={{flex: 1}}> 
+            <StatusBar barStyle={"dark-content"}/>
+            <Header/>
+            <View>
+                <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
             </View>
+            <SecScreen filter={filter}/>
         </SafeAreaView>
     )
 }
