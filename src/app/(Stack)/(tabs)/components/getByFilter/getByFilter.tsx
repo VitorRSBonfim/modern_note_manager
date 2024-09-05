@@ -5,10 +5,14 @@ import { HomeComp } from "../homeScreen/homeScreen"
 import { StyleSheet } from "react-native"
 import { Pressable } from "react-native"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { useState } from "react"
+import { router } from "expo-router"
 
 type GetSecProps = {
     filter: String
 }
+
+
 
 // const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
 
@@ -16,28 +20,29 @@ function GetSec({filter}: GetSecProps) {
 
     const newObjectData = []
 
-    console.log("Chegou " + filter)
-
     for ( let c = 0; c < AllNotes.length; c++) {
         if (AllNotes[c].section == filter) {
-            newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState, section: AllNotes[c].noteState})
+            newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState, section: AllNotes[c].noteState, color: AllNotes[c].color})
             
         }
     }
 
     const expNewObjectData = newObjectData
-
+    const [isPressed, setIsPressed] = useState<boolean>(false)
+    
     if (filter != "all") {
+        
         return (
             <FlatList
             data={newObjectData}
             renderItem={({item}) => (
                 <View style={styles.container}>
-                    <Pressable onPress={() => {console.log("ABRIR NOTA")}}>
+                    <StatusBar barStyle={"dark-content"}/>
+                    <Pressable onPress={() => {router.navigate("/(Stack)/newNote/newNote"), console.log("tasks")}}>
                     <View style={styles.containerNote}>
 
-                        <View style={{flexDirection: "row"}}>
-                            <View style={{width: 8,backgroundColor: "#7A4ED9", borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}>
+                        <View style={{flexDirection: "row", maxWidth: "90%"}}>
+                            <View style={{width: 8,backgroundColor: item.color, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}>
                                 
                             </View>
                             <View style={styles.containerContent}>
@@ -82,6 +87,7 @@ function GetSec({filter}: GetSecProps) {
 
 
 export function SecScreen({filter}: GetSecProps) {
+    
     return (
         <GetSec filter={filter}/>
     )

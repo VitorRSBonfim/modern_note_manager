@@ -1,6 +1,6 @@
 import { View, Text} from "react-native"
 
-export default function userScreen() {
+export  function userScreen() {
     return (
         <View>
             <Text>

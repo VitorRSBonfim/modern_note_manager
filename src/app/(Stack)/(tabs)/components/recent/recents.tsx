@@ -3,10 +3,9 @@ import { StyleSheet } from "react-native"
 import { AllNotes } from "@/src/database/staticData/recents/recentsData"
 import { useState } from "react"
 import { useEffect } from "react"
-import { Modal } from "react-native"
-import { Pressable, Alert } from "react-native"
+import { Pressable } from "react-native"
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons"
-
+import { router, Router } from "expo-router"
 /* 
 
 if the year is older than the currenty year (Is older)
@@ -32,6 +31,7 @@ const currentyDay = date.getDate()
 const currentyMonth = date.getMonth()
 const currentyYear = date.getFullYear()
 const newObjectData = []
+const newObjectColors = []
 // const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
 
 
@@ -45,11 +45,10 @@ for ( let c = 0; c < AllNotes.length; c++) {
     
     
  
-    if ( parseInt(tYear) === currentyYear && parseInt(tMonth) === currentyMonth + 1 && parseInt(tDay) >= currentyDay - 2 ) {
+    if ( parseInt(tYear) === currentyYear && parseInt(tMonth) === currentyMonth + 1 && parseInt(tDay) >= currentyDay - 2) {
         
-        newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState})
-        
-
+        newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState, color: AllNotes[c].color})
+    
     } 
         
 }
@@ -66,7 +65,7 @@ console.log(expNewObjectData)
 export function RecentsNotes() {
 
     const [modalVisible, setModalVisible] = useState(false);
-
+    
 
     return (
        
@@ -76,11 +75,11 @@ export function RecentsNotes() {
                 <Text style={styles.txtTittle}>
                     Recent
                 </Text>
-                <Pressable onPress={() => {console.log("mostrar nota")}}>
+                <Pressable onPress={() => {console.log("mostrar nota"), router.navigate("/(Stack)/newNote/newNote")}}>
                     <FlatList
                     data={expNewObjectData}
                     renderItem={({item}) =>
-                    <View style={styles.containerNote}>
+                    <View style={[styles.containerNote, {backgroundColor: item.color}]}>
                        
                         <Text style={styles.txtNoteTittle}>
                             {item.noteName}
@@ -90,7 +89,7 @@ export function RecentsNotes() {
                         </Text>
                         <View style={{flex: 1, alignItems: "flex-end",justifyContent: "space-between", width: "100%", flexDirection: "row"}}>
                             <Pressable style={styles.containerPressableDelete} onPress={() => console.log("Delete")}>
-                                <MaterialCommunityIcons name="delete-empty-outline" size={20} color={"#7A4ED9"}/>
+                                <MaterialCommunityIcons name="delete-empty-outline" size={20} color={item.color}/>
                             </Pressable>
                             <Text style={{marginRight: 4, color: "#FFFFFF", fontSize: 12}}>{item.noteDate}</Text>
                         </View>
@@ -116,11 +115,10 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     containerNote: {
-        backgroundColor: "#7A4ED9", // Definida pelo usuario futuramente
         minWidth: 200,
-        minHeight: 200,
+        minHeight: 160,
         maxWidth: 200,
-        maxHeight: 200,
+        maxHeight: 160,
         borderRadius: 10,
         alignItems: "flex-start",
         marginLeft: 2,

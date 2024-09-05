@@ -1,6 +1,6 @@
 import { View, Text, FlatList, Pressable} from "react-native"
 import { StatusBar, StyleSheet } from "react-native"
-import { Header } from "@/src/app/(tabs)/components/header"
+import { Header } from "./components/header";
 import { useState, useEffect } from "react";
 import { Filter } from "./components/filter";
 import { Filters } from "./components/filters";
@@ -12,7 +12,7 @@ import { RecentsNotes } from "./components/recent/recents";
 import { expNewObjectData } from "./components/recent/recents";
 import { ScrollView } from "react-native";
 import { SecScreen } from "./components/getByFilter/getByFilter";
-
+import { NavigationContainer } from "@react-navigation/native";
 import { HomeComp } from "./components/homeScreen/homeScreen";
 
 
@@ -60,7 +60,6 @@ export default function HomeScreen() {
     
     const [filter, setFilter] = useState(FILTERS[0])
     
-
     return (
         <SafeAreaView style={{flex: 1}}> 
             <StatusBar barStyle={"dark-content"}/>
@@ -69,6 +68,7 @@ export default function HomeScreen() {
                 <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
             </View>
             <SecScreen filter={filter}/>
+            
         </SafeAreaView>
     )
 }
