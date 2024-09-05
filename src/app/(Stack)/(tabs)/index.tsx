@@ -8,13 +8,10 @@ import { FILTERS } from "@/src/database/staticData/filter/filterData";
 import { FilterProps } from "./components/filters/filters.t";
 import { AllNotes } from "@/src/database/staticData/recents/recentsData";
 import { SafeAreaView } from "react-native";
-import { RecentsNotes } from "./components/recent/recents";
-import { expNewObjectData } from "./components/recent/recents";
 import { ScrollView } from "react-native";
 import { SecScreen } from "./components/getByFilter/getByFilter";
 import { NavigationContainer } from "@react-navigation/native";
-import { HomeComp } from "./components/homeScreen/homeScreen";
-
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const data = [
     {id: 1, noteName: "note01", section: "all"},
@@ -58,16 +55,18 @@ type GetSecProps = {
 
 export default function HomeScreen() {
     
-    const [filter, setFilter] = useState(FILTERS[0])
+    const [filter, setFilter] = useState<string>(FILTERS[0])
     
     return (
         <SafeAreaView style={{flex: 1}}> 
             <StatusBar barStyle={"dark-content"}/>
             <Header/>
-            <View>
-                <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
-            </View>
-            <SecScreen filter={filter}/>
+            <SafeAreaProvider>
+                <View>
+                    <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
+                </View>
+                <SecScreen filter={filter}/>
+            </SafeAreaProvider>
             
         </SafeAreaView>
     )

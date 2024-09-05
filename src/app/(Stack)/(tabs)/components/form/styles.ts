@@ -27,6 +27,11 @@ export const style = StyleSheet.create({
     },
     inputNoteName: {
         fontSize: 40,
-        color: "#7A4ED9"
+        color: "#7A4ED9",
+        
+    },
+    containerScope: {
+        marginLeft: 20,
+        marginRight: 20
     }
 })

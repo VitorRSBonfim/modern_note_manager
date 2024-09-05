@@ -38,7 +38,8 @@ export const style = StyleSheet.create({
         alignItems: "center"
     },
     containerScope: {
-        marginLeft: 20
+        marginLeft: 20,
+        backgroundColor: "red"
     },
     pressableContainer: {
         padding: 20

@@ -11,7 +11,7 @@ export function Filters({ filters, filter, onChange } : FilterProps ) {
 
     
     return (
-        <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginLeft: 20}}>
+        <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginLeft: 20,}}>
            
             <FlatList
             data={filters}

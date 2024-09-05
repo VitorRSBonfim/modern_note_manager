@@ -10,13 +10,7 @@ export function HeaderNew() {
 
     const [isPressed, setIsPressed] = useState<boolean>(false)
 
-    if (isPressed) {
-        return(
-            router.navigate("/(Stack)/(tabs)")
-        )
-        setIsPressed(false)
-
-    }
+   
 
     return (
         <View style={style.containerHeader}>
@@ -36,7 +30,7 @@ export function HeaderNew() {
                 </View>
 
              </Modal>
-            <Pressable style={style.returnBtn} onPress={()=>{setIsPressed(true)}}>
+            <Pressable style={style.returnBtn} onPress={()=>{router.back()}}>
                 <AntDesign name="arrowleft" size={20}></AntDesign>
             </Pressable>
             <View style={style.containerSideRight}>
