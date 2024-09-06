@@ -4,7 +4,7 @@ import { View, Text } from "react-native"
 import { Pressable } from "react-native"
 import { style } from "./styles";
 import { AntDesign, MaterialIcons, Octicons, SimpleLineIcons } from "@expo/vector-icons"
-import { Modal } from "react-native"
+import  Modal  from "react-native-modal"
 import { useState } from "react"
 import { Select } from "native-base"
 import { CheckIcon } from "native-base"
@@ -19,11 +19,13 @@ import { DB } from "@/src/database/localDatabase/databaseOp/db"
 import { Button } from "react-native"
 import { TextInput } from "react-native";
 import { styles } from "../filter/style";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList } from "react-native";
 import { FILTERS } from "@/src/database/staticData/filter/filterData";
 import { AllNotes } from "@/src/database/staticData/recents/recentsData";
 import { Picker } from "@react-native-picker/picker";
-
+import { StatusBar } from "react-native";
+import { ScrollView } from "react-native";
+import { COLORS } from "@/src/database/staticData/colors/color";
 function Ga(){
     const newArray = []
     for (let c = 0; FILTERS.length; c++) {
@@ -52,8 +54,8 @@ function GetByFilter(){
 
 
 export function FormAddNote() {
-    
-    const [modalVisible, setModalVisible] = useState<boolean>(false)
+    const [isModalVisible, setModalVisible] = useState(false);
+ 
     const [service, setService] = useState("")
     const db = DB()
     const [noteName, setNoteName] = useState("")
@@ -74,39 +76,57 @@ export function FormAddNote() {
         } catch (error) {
             
         }
-    }
+    }    
+  
     return (
         <View>
+            <StatusBar barStyle={"dark-content"}/>
+            <Modal animationIn={"slideInUp"}  style={{position: "absolute", bottom: 0, left: 0,marginBottom: 0, marginLeft: 0, width: "100%", height: "100%"}} isVisible={isModalVisible} backdropColor="trasparent" onBackdropPress={()=>{setModalVisible(false)}} >
+                <View style={{ backgroundColor: "#FFFFFF", height: "auto", borderRadius: 20, position: "absolute", bottom: 0, width: "100%"}}>
+                    
+                        <View>
+                            
+                            <Pressable style={{position: "absolute", marginTop: 2, marginLeft: 2, padding: 2}} onPress={()=>{setModalVisible(false)}} >
+                                <AntDesign name="close" size={30}/>
+                            </Pressable>
+                            <View style={{paddingTop: 50}}>
+                                <Text>I am the modal content!</Text>
+                                <Text>
+                                
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={{marginLeft: 20}}>
+                                    Colors
+                                </Text>
+                                <FlatList
+                                    contentContainerStyle={style.containerList}
+                                    numColumns={2}
+                                    data={COLORS}
+                                    renderItem={({ item }) =>
+                                        
+                                        <View style={[{backgroundColor: item},style.containerColors]}>
+                                            <Text>
+                                                {item}
+                                            </Text>
+                                        </View>
+                                    }
+                                ></FlatList>
+                            </View>
+                            
+                        </View>
+                   
+                </View>
+            </Modal>
             <View style={style.containerHeader}>
-                <Modal
-                 animationType="slide"
-                 transparent={true}
-                 visible={modalVisible}
-                 onRequestClose={() => {
-                 setModalVisible(!modalVisible);
-                }}>
-                    <View style={{position: "absolute", height: 400, backgroundColor: "#FFFFFF", bottom: 0, width: "100%"}} >
                 
-                        <Pressable style={{maxWidth: 38, marginTop: 10, marginLeft: 10, padding: 4, backgroundColor: "#7A4ED9", borderRadius: 100}} onPress={()=>{setModalVisible(false)}}>
-                
-                            <AntDesign name="close" size={30} color={"#FFFFFF"} />
-                
-                        </Pressable>
-                        
-                        <GetByFilter/>
-                        
-                        
-                           
-                    </View>
-                 </Modal>
                 <Pressable style={style.containerBtnSave} onPress={insertNotes}>
                     <Text style={style.txtHeader}>
                         Save
                     </Text>
-                
                 </Pressable>
-                <Pressable onPress={()=>{setModalVisible(true)}}>
-                    <SimpleLineIcons name="options-vertical" size={20}/>
+                <Pressable onPress={()=>{setModalVisible(true)}} style={style.paddingItens}>
+                    <SimpleLineIcons name="options-vertical" size={26} />
                 </Pressable>
             </View>
             <View style={style.containerScope}>

@@ -33,5 +33,21 @@ export const style = StyleSheet.create({
     containerScope: {
         marginLeft: 20,
         marginRight: 20
+    },
+    paddingItens: {
+        marginLeft: 10,
+    },
+    containerColors: {
+        marginLeft: 20,
+        marginRight: 20,
+        minHeight: 100,
+        minWidth: 100,
+        marginTop: 10,
+        marginBottom: 10,
+        
+    },
+    containerList: {
+        alignItems: "center",
+        justifyContent: "center"
     }
 })

@@ -2,9 +2,10 @@ import { View, Text } from "react-native"
 import { Pressable } from "react-native"
 import { style } from "../style"
 import { AntDesign, SimpleLineIcons } from "@expo/vector-icons"
-import { Modal } from "react-native"
+import  Modal  from "react-native-modal"
 import { useState } from "react"
 import { router } from "expo-router"
+
 export function HeaderNew() {
     const [modalVisible, setModalVisible] = useState<boolean>(false)
 
@@ -14,22 +15,11 @@ export function HeaderNew() {
 
     return (
         <View style={style.containerHeader}>
-             <Modal
-             animationType="slide"
-             transparent={true}
-             visible={modalVisible}
-             onRequestClose={() => {
-             setModalVisible(!modalVisible);
-            }}>
-                <View style={{position: "absolute", height: 200, backgroundColor: "red", bottom: 0, width: "100%"}} >
-                    <Pressable>
-                        <Text onPress={()=>{setModalVisible(false)}}>
-                            Close MODAL
-                        </Text>
-                    </Pressable>
+            <Modal isVisible={true}>
+                <View style={{ flex: 1 }}>
+                    <Text>I am the modal content!</Text>
                 </View>
-
-             </Modal>
+            </Modal>
             <Pressable style={style.returnBtn} onPress={()=>{router.back()}}>
                 <AntDesign name="arrowleft" size={20}></AntDesign>
             </Pressable>
