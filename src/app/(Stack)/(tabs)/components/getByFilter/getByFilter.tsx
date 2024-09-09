@@ -9,7 +9,8 @@ import { useState } from "react"
 import { router } from "expo-router"
 import { FILTERS } from "@/src/database/staticData/filter/filterData"
 import { Init } from "./init"
-import { SafeAreaView } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 type GetSecProps = {
     filter: String
 }
@@ -41,58 +42,58 @@ function GetSec({filter}: GetSecProps) {
         if (filter != "all") {
             
             return (
-                <FlatList
-                data={newObjectData}
-                renderItem={({item}) => (
-                    <View style={styles.container}>
-                        <StatusBar barStyle={"dark-content"}/>
-                        <Pressable onPress={() => {router.navigate("/(Stack)/newNote/newNote"), console.log("tasks")}}>
-                        <View style={styles.containerNote}>
-
-                            <View style={{flexDirection: "row", maxWidth: "90%"}}>
-                                <View style={{width: 8,backgroundColor: item.color, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}>
-                                    
+                
+                    <FlatList
+                    data={newObjectData}
+                    renderItem={({item}) => (
+                        <View style={styles.container}>
+                            <StatusBar barStyle={"dark-content"}/>
+                            <Pressable onPress={() => {router.navigate("/(Stack)/newNote/newNote"), console.log("tasks")}}>
+                            <View style={styles.containerNote}>
+                                <View style={{flexDirection: "row", maxWidth: "90%"}}>
+                                    <View style={{width: 8,backgroundColor: item.color, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}>
+                    
+                                    </View>
+                                    <View style={styles.containerContent}>
+                                        <Text style={styles.contentTittle}>
+                                            {item.noteName}
+                                        </Text>
+                                        <Text style={styles.contentSub}>
+                                            {item.noteContent}
+                                        </Text>
+                                    </View>
                                 </View>
-                                <View style={styles.containerContent}>
-                                    <Text style={styles.contentTittle}>
-                                        {item.noteName}
-                                    </Text>   
-                                    <Text style={styles.contentSub}>
-                                        {item.noteContent}
-                                    </Text>  
-                                </View>                            
-                            </View>
-
-                            <View style={{alignContent: "flex-end", justifyContent: "flex-end"}}>
-                                <Text style={{fontSize: 10, marginRight: 4, marginBottom: 4}}>
-                                    {item.noteDate}
-                                </Text>
-                            </View>
-
-                            </View>
-                        </Pressable>
-
-                    </View>
-                )}/>
+                                <View style={{alignContent: "flex-end", justifyContent: "flex-end"}}>
+                                    <Text style={{fontSize: 10, marginRight: 4, marginBottom: 4}}>
+                                        {item.noteDate}
+                                    </Text>
+                                </View>
+                                </View>
+                            </Pressable>
+                        </View>
+                    )}/>
+                
             )
         } else if (filter == "all" ) {
             return (
                 <HomeScreen/>
             )
         }     
-    } else if (FILTERS.length <= 0) {
+    } else if (FILTERS.length <= 0 || AllNotes.length == 0) {
         return (
-            <View style={{justifyContent: "center", alignItems: "center", height: "100%"}}>
-                <Text style={{fontSize: 60, color: "#524B63"}}>
-                    精
-                </Text>
-                <Text style={{fontSize: 60, color: "#524B63"}}>
-                    神
-                </Text>
-                <Text style={{fontWeight: "light", color: "#343239"}}>
-                    No one note
-                </Text>
-            </View>
+            <SafeAreaProvider>
+                <View style={{justifyContent: "center", alignItems: "center", height: "100%"}}>
+                    <Text style={{fontSize: 60, color: "#524B63"}}>
+                        精
+                    </Text>
+                    <Text style={{fontSize: 60, color: "#524B63"}}>
+                        神
+                    </Text>
+                    <Text style={{fontWeight: "light", color: "#343239"}}>
+                        No one note
+                    </Text>
+                </View>
+            </SafeAreaProvider>
         )
     }
     
@@ -114,11 +115,19 @@ export function SecScreen({filter}: GetSecProps) {
         console.log("VAZIO")
     }
     return (
-        <SafeAreaView style={{height: "100%"}}>
-            <View>
-                <GetSec filter={filter}/>
-            </View>
-        </SafeAreaView>
+    
+        
+            
+        
+            
+        
+        <View style={{backgroundColor: "red", height: "95%"}}>
+            <GetSec filter={filter}/>
+        </View>
+        
+            
+        
+        
     )
 }
 

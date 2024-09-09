@@ -3,7 +3,7 @@ import { View, Text, FlatList } from "react-native"
 import { StyleSheet } from "react-native"
 import { AllNotes } from "@/src/database/staticData/recents/recentsData"
 import { useState } from "react"
-import { Pressable } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons"
 import { router, Router } from "expo-router"
 import { useEffect } from "react"
@@ -11,7 +11,13 @@ import { DB } from "@/src/database/localDatabase/databaseOp/db"
 import { usePathname } from "expo-router"
 import { useTabEffect } from "../../_layout"
 import { dbType } from "@/src/database/localDatabase/databaseOp/db"
+import { Modal } from "react-native"
+import { Ionicons } from "@expo/vector-icons"
+import { Pressable } from "react-native"
 export function HomeScreen() {
+ 
+    const [pressedId, setPressedId] = useState<number>()
+    const [isOpen, setIsOpen] = useState<boolean>(false)
     
     const [modalVisible, setModalVisible] = useState(false);
     const [noteArray, setNoteArray] =  useState<dbType[] | undefined  >([])
@@ -53,40 +59,76 @@ export function HomeScreen() {
     });
 
     return (
-        <View>
-             <View style={{height: "100%"}}>
-                <Text style={styles.txtTittle}>
-                    Recent
-                </Text>
-                    <FlatList
-                    data={noteArray}
-                    renderItem={({item}) =>
-                        <Pressable onPress={() => {console.log("mostrar nota"), router.navigate("/(Stack)/newNote/newNote")}}>
-                            <View style={[styles.containerNote, {backgroundColor: item.color}]}>
-                        
-                        <Text style={styles.txtNoteTittle}>
-                            {item.noteName}
+        
+            <SafeAreaView>
+                <View>
+                    <View>
+                        <Text style={styles.txtTittle}>
+                            Recent
                         </Text>
-                        <Text style={styles.txtNoteContent}>
-                            {item.noteContent}
-                        </Text>
-                        <View style={{flex: 1, alignItems: "flex-end",justifyContent: "space-between", width: "100%", flexDirection: "row"}}>
-                            <Pressable style={styles.containerPressableDelete} onPress={()=> {setIdDel(item.id), deleteNote(item.id), fetchNote(), console.log(typeof(item.id))}}>
-                                <MaterialCommunityIcons name="delete-empty-outline" size={20} color={item.color}/>
-                            </Pressable>
-                            <Text style={{marginRight: 4, color: "#FFFFFF", fontSize: 12}}>{item.noteDate}</Text>
-                        </View>
-                        </View>
-                        </Pressable>
-                    }
-                    keyExtractor={item => String(item.id)}
-                    horizontal
-                    showsHorizontalScrollIndicator={true}
-                    contentContainerStyle={styles.containerList}
-                    />
+                        <FlatList
+                            data={noteArray}
+                            renderItem={({ item }) =>
+                                <Pressable onPress={() => { console.log("mostrar nota"), router.navigate("/(Stack)/newNote/newNote") }}>
+                                    <View style={[styles.containerNote, { backgroundColor: item.color }]}>
+                                        <Text style={styles.txtNoteTittle}>
+                                            {item.noteName}
+                                        </Text>
+                                        <Text style={styles.txtNoteContent}>
+                                            {item.noteContent}
+                                        </Text>
+                                        <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexDirection: "row" }}>
+                                            <Pressable style={styles.containerPressableDelete} onPress={() => { setIdDel(item.id), deleteNote(item.id), fetchNote(), console.log(typeof (item.id)) }}>
+                                                <MaterialCommunityIcons name="delete-empty-outline" size={20} color={item.color} />
+                                            </Pressable>
+                                            <Text style={{ marginRight: 4, color: "#FFFFFF", fontSize: 12 }}>{item.noteDate}</Text>
+                                        </View>
+                                    </View>
+                                </Pressable>
+                            }
+                            keyExtractor={item => String(item.id)}
+                            horizontal
+                            showsHorizontalScrollIndicator={true}
+                            contentContainerStyle={styles.containerList}
+                        />
+                    </View>
                 
-            </View>
-        </View>
+                            <FlatList
+                            data={noteArray}
+                            renderItem={({item}) =>
+                                <View>
+                                    <Pressable onLongPress={()=> {setModalVisible(true), setIdDel(item.id)}} style={{ minHeight: 60, marginBottom: 10, marginTop: 10}} onPress={()=>{router.navigate("/newNote/newNote"), console.log(isOpen)}}>
+                                        <View  style={styles.containerNote2}>
+                                            <View style={{flexDirection: "row", maxWidth: "90%"}}>
+                                                <View style={{width: 8,backgroundColor: item.color, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}>
+                
+                                                </View>
+                                                <View style={styles.containerContent}>
+                                                    <Text style={styles.contentTittle}>
+                                                        {item.noteName}
+                                                    </Text>
+                                                    <Text style={styles.contentSub}>
+                                                        {item.noteContent}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <View style={{alignContent: "flex-end", justifyContent: "flex-end"}}>
+                                                <Text style={{fontSize: 10, marginRight: 4, marginBottom: 4}}>
+                                                    {item.noteDate}
+                                                </Text>
+                                            </View>
+                                            </View>
+                                    </Pressable>
+                                </View>
+                            }
+                            keyExtractor={item => String(item.id)}
+                            showsVerticalScrollIndicator={false}
+                        />
+                
+                
+                </View>
+            </SafeAreaView>
+        
     )
 }
 
@@ -132,7 +174,49 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         marginLeft: 4,
         marginBottom: 4
-    }
+    },
+    containerContent: {
+        
+    },
+    contentTittle: {
+        fontSize: 20,
+        paddingLeft: 8
+    },
+    contentSub: {
+        fontSize: 14,
+        paddingLeft: 8
+    },
+    pressableEdit: {
+        width: "90%",
+        backgroundColor: "#524B63",
+        alignSelf: "center",
+        borderRadius: 10,
+        height: 40,
+        justifyContent: "center"
+    },
+    pressableDelete: {
+        width: "90%",
+        backgroundColor: "#FF6363",
+        alignSelf: "center",
+        borderRadius: 10,
+        height: 40,
+        marginTop: 10,
+        justifyContent: "center"
+    },
+    container: {
+        alignItems: "center",
+        
+    },
+    containerNote2: {
+        minHeight: 80,
+        width: "90%",
+        backgroundColor: "#FFFFFF",
+        
+        borderRadius: 10,
+        
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
 }) 
 
 

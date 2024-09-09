@@ -7,7 +7,7 @@ import { Filters } from "./components/filters";
 import { FILTERS } from "@/src/database/staticData/filter/filterData";
 import { FilterProps } from "./components/filters/filters.t";
 import { AllNotes } from "@/src/database/staticData/recents/recentsData";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
 import { SecScreen } from "./components/getByFilter/getByFilter";
 import { NavigationContainer } from "@react-navigation/native";
@@ -58,16 +58,18 @@ export default function HomeScreen() {
     const [filter, setFilter] = useState<string>(FILTERS[0])
     
     return (
-        <SafeAreaView style={{flex: 1}}> 
-            <StatusBar barStyle={"dark-content"}/>
-            <Header/>
+        <SafeAreaView style={{ height: "100%", backgroundColor: "black"}}> 
+            
+            
+                
+         
             <SafeAreaProvider>
-                <View>
-                    <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
-                </View>
                 <SecScreen filter={filter}/>
             </SafeAreaProvider>
+                
             
+            
+           
         </SafeAreaView>
     )
 }
