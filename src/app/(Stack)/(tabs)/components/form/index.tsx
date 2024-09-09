@@ -14,7 +14,7 @@ import React from "react"
 import { NativeBaseProvider } from "native-base"
 import { GetFilters } from "./filterGet";
 import { PresenceTransition } from "native-base"
-import { Link, router, usePathname } from "expo-router"
+import { Link, router } from "expo-router"
 import { DB } from "@/src/database/localDatabase/databaseOp/db"
 import { Button } from "react-native"
 import { TextInput } from "react-native";
@@ -28,6 +28,15 @@ import { ScrollView } from "react-native";
 import { COLORS } from "@/src/database/staticData/colors/color";
 import { useTabEffect } from "../../_layout";
 import { Alert } from "react-native";
+import { usePathname } from "expo-router";
+/*
+export function clearByRoute() {
+    const path = usePathname()
+    console.log(path)
+}
+clearByRoute()
+*/
+
 function Ga(){
     const newArray = []
     for (let c = 0; FILTERS.length; c++) {
@@ -81,22 +90,8 @@ export function FormAddNote() {
     const [noteDate, setNoteDate] = useState(fullDate)
     const [section, setSection] = useState("all")
     const [hasContent, setHasContent] = useState<boolean>(false)
-
-    useTabEffect("/newNote", () => {
-        setColor(COLORS[0])
-        console.log("dd")
-    });
-
-    const path = usePathname()
-
-    if (path != "/newNote") {
-        ()=>{
-            setNoteName("")
-        }
-    }
     
- 
-  
+
     async function insertNotes() {
         try {
             const result = await db.insertNotes(noteName, noteContent, noteDate, section, color)
@@ -131,14 +126,21 @@ export function FormAddNote() {
                                 <Text style={{marginLeft: 20, marginRight: 20}}>
                                     Colors
                                 </Text>
-                                <FlatList
-                                    contentContainerStyle={style.containerList}
-                                    data={COLORS}
-                                    renderItem={({ item }) =>
-                                        <Pressable onPress={()=>setColor(item)} style={[{backgroundColor: item},style.containerColors, item == color && {borderBlockColor: "black", borderWidth: 2}]}>
-                                        </Pressable>
-                                    }
-                                ></FlatList>
+                                
+                                    <FlatList
+                                       
+                                        contentContainerStyle={style.containerList}
+                                        data={COLORS}
+                                        renderItem={({ item }) =>
+                                           
+                                                <Pressable onPress={()=>setColor(item)} style={[{backgroundColor: item},style.containerColors, item == color && {borderBlockColor: "black", borderWidth: 2}]}>
+                                                </Pressable>    
+                                            
+                                            
+                                        }
+                                    ></FlatList>    
+                               
+                                
                             </View>
                             
                         </View>

@@ -9,9 +9,10 @@ import { FilterProps } from "./components/filters/filters.t";
 import { AllNotes } from "@/src/database/staticData/recents/recentsData";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native";
-import { SecScreen } from "./components/getByFilter/getByFilter";
+import { Components } from "./components/getByFilter/getByFilter";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { usePathname } from "expo-router";
 
 const data = [
     {id: 1, noteName: "note01", section: "all"},
@@ -41,6 +42,8 @@ for ( let c = 0; c < dd.length; c++ ) {
 }
 
 
+
+
 const date = new Date();
 
 const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
@@ -55,21 +58,10 @@ type GetSecProps = {
 
 export default function HomeScreen() {
     
-    const [filter, setFilter] = useState<string>(FILTERS[0])
     
     return (
-        <SafeAreaView style={{ height: "100%", backgroundColor: "black"}}> 
-            
-            
-                
-         
-            <SafeAreaProvider>
-                <SecScreen filter={filter}/>
-            </SafeAreaProvider>
-                
-            
-            
-           
+        <SafeAreaView style={{ height: "100%"}}> 
+            <Components/>
         </SafeAreaView>
     )
 }

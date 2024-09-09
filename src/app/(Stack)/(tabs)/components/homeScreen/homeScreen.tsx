@@ -14,13 +14,18 @@ import { dbType } from "@/src/database/localDatabase/databaseOp/db"
 import { Modal } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { Pressable } from "react-native"
+import { Header } from "../header"
+import { Filter } from "../filter"
+import { Filters } from "../filters"
+import { FILTERS } from "@/src/database/staticData/filter/filterData"
 export function HomeScreen() {
- 
+    const [filter, setFilter] = useState<string>(FILTERS[0])
+
     const [pressedId, setPressedId] = useState<number>()
     const [isOpen, setIsOpen] = useState<boolean>(false)
     
     const [modalVisible, setModalVisible] = useState(false);
-    const [noteArray, setNoteArray] =  useState<dbType[] | undefined  >([])
+    const [noteArray, setNoteArray] =  useState<dbType[] | undefined >([])
     const [idDel, setIdDel] = useState<number>()
     const db = DB()
 
@@ -59,44 +64,43 @@ export function HomeScreen() {
     });
 
     return (
-        
-            <SafeAreaView>
-                <View>
-                    <View>
-                        <Text style={styles.txtTittle}>
-                            Recent
-                        </Text>
-                        <FlatList
-                            data={noteArray}
-                            renderItem={({ item }) =>
-                                <Pressable onPress={() => { console.log("mostrar nota"), router.navigate("/(Stack)/newNote/newNote") }}>
-                                    <View style={[styles.containerNote, { backgroundColor: item.color }]}>
-                                        <Text style={styles.txtNoteTittle}>
-                                            {item.noteName}
-                                        </Text>
-                                        <Text style={styles.txtNoteContent}>
-                                            {item.noteContent}
-                                        </Text>
-                                        <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexDirection: "row" }}>
-                                            <Pressable style={styles.containerPressableDelete} onPress={() => { setIdDel(item.id), deleteNote(item.id), fetchNote(), console.log(typeof (item.id)) }}>
-                                                <MaterialCommunityIcons name="delete-empty-outline" size={20} color={item.color} />
-                                            </Pressable>
-                                            <Text style={{ marginRight: 4, color: "#FFFFFF", fontSize: 12 }}>{item.noteDate}</Text>
+                <View style={{height: "100%"}}>
+                        <SafeAreaView>
+                            <FlatList
+                                
+                                data={noteArray}
+                                
+                                renderItem={({ item }) =>
+                                    <Pressable onPress={() => { console.log("mostrar nota"), router.navigate("/(Stack)/newNote/newNote")}}>
+                                        <View style={[styles.containerNote, { backgroundColor: item.color }]}>
+                                            <Text style={styles.txtNoteTittle}>
+                                                {item.noteName}
+                                            </Text>
+                                            <Text style={styles.txtNoteContent}>
+                                                {item.noteContent}
+                                            </Text>
+                                            <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexDirection: "row" }}>
+                                                <Pressable style={styles.containerPressableDelete} onPress={() => { setIdDel(item.id), deleteNote(item.id), fetchNote(), console.log(typeof (item.id)) }}>
+                                                    <MaterialCommunityIcons name="delete-empty-outline" size={20} color={item.color} />
+                                                </Pressable>
+                                                <Text style={{ marginRight: 4, color: "#FFFFFF", fontSize: 12 }}>{item.noteDate}</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                </Pressable>
-                            }
-                            keyExtractor={item => String(item.id)}
-                            horizontal
-                            showsHorizontalScrollIndicator={true}
-                            contentContainerStyle={styles.containerList}
-                        />
-                    </View>
+                                    </Pressable>
+                                }
+                                keyExtractor={item => String(item.id)}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={styles.containerList}
+                                
+                            />
+                        </SafeAreaView>
+                    
                 
                             <FlatList
                             data={noteArray}
                             renderItem={({item}) =>
-                                <View>
+                                <View style={{alignItems: "center"}}>
                                     <Pressable onLongPress={()=> {setModalVisible(true), setIdDel(item.id)}} style={{ minHeight: 60, marginBottom: 10, marginTop: 10}} onPress={()=>{router.navigate("/newNote/newNote"), console.log(isOpen)}}>
                                         <View  style={styles.containerNote2}>
                                             <View style={{flexDirection: "row", maxWidth: "90%"}}>
@@ -127,8 +131,6 @@ export function HomeScreen() {
                 
                 
                 </View>
-            </SafeAreaView>
-        
     )
 }
 
@@ -149,6 +151,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         marginLeft: 2,
         marginRight: 2,
+        backgroundColor: "blue",
     },
     txtTittle: {
         marginTop: 8,

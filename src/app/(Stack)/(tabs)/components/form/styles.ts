@@ -1,6 +1,4 @@
 import { StyleSheet  } from "react-native";
-
-
 export const style = StyleSheet.create({
     containerHeader: {
         backgroundColor: "#FFFFFF",
@@ -53,7 +51,6 @@ export const style = StyleSheet.create({
     containerList: {
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "red",
         flexDirection: "row",
         flexWrap: "wrap"
     }

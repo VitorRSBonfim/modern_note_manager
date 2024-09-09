@@ -1,3 +1,4 @@
 export const FILTERS = [
-    "all"
+    "all",
+    "section01"
 ]
