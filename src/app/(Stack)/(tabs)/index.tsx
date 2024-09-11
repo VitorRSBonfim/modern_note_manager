@@ -4,7 +4,6 @@ import { Header } from "./components/header";
 import { useState, useEffect } from "react";
 import { Filter } from "./components/filter";
 import { Filters } from "./components/filters";
-import { FILTERS } from "@/src/database/staticData/filter/filterData";
 import { FilterProps } from "./components/filters/filters.t";
 import { AllNotes } from "@/src/database/staticData/recents/recentsData";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -37,18 +36,13 @@ const dd = [
 	{id: 3, name: "Mordekaiser"}
 ]
 
-for ( let c = 0; c < dd.length; c++ ) {
-    console.log(dd[c].name)
-}
-
-
 
 
 const date = new Date();
 
 const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
 
-console.log(currentyDate)
+
 
 type GetSecProps = {
     filter: String

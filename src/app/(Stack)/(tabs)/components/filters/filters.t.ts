@@ -1,5 +1,5 @@
 export type FilterProps = {
-    filters: string[],
-    filter: string,
+    filters: any,
+    filter: string ,
     onChange: (value: string) => void
 }

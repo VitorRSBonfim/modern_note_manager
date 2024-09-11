@@ -7,6 +7,8 @@ import { Pressable } from "react-native";
 import { Redirect } from "expo-router";
 import { useState } from "react";
 
+
+
 export function Filters({ filters, filter, onChange } : FilterProps ) {
 
     

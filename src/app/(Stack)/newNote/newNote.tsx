@@ -66,7 +66,7 @@ export default function EditNote() {
                 </View>
             </Modal>
             <View style={[style.containerHeader]}>
-                <Pressable style={[noteName != "" && style.containerBtnSave,  noteContent != "" && style.containerBtnSave]} >
+                <Pressable style={[style.containerBtnSave]} onPress={()=>{router.back()}} >
                     <Text style={style.txtHeader}>
                         Salvar
                     </Text>

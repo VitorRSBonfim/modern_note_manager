@@ -9,7 +9,6 @@ import { useEffect } from "react";
 
 export function useTabEffect(route: string, effect: () => void) {
     const path = usePathname();
-    console.log(path)
     useEffect(() => {
         if (path === route) {
             effect();

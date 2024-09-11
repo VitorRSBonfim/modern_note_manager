@@ -17,9 +17,8 @@ import { Pressable } from "react-native"
 import { Header } from "../header"
 import { Filter } from "../filter"
 import { Filters } from "../filters"
-import { FILTERS } from "@/src/database/staticData/filter/filterData"
 export function HomeScreen() {
-    const [filter, setFilter] = useState<string>(FILTERS[0])
+   
 
     const [pressedId, setPressedId] = useState<number>()
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -32,7 +31,7 @@ export function HomeScreen() {
     async function fetchNote() {
         try {
             const response = await db.fetchNotes()
-            console.log(response)
+           
             
             if (response != null) {
                 setNoteArray(response)  
@@ -48,10 +47,10 @@ export function HomeScreen() {
        
         try {
         
-            console.log("This" + idDel)
+            
 
             const response = await db.deleteNote(id)
-            console.log(response)
+            
             
         } catch (error) {
             
@@ -60,7 +59,7 @@ export function HomeScreen() {
 
     useTabEffect("/", () => {
         fetchNote()
-        console.log("Notas Carregadas")
+        
     });
 
     return (

@@ -5,9 +5,8 @@ import { HomeScreen } from "../homeScreen/homeScreen"
 import { StyleSheet } from "react-native"
 import { Pressable } from "react-native"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { router } from "expo-router"
-import { FILTERS } from "@/src/database/staticData/filter/filterData"
 import { Init } from "./init"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { SafeAreaProvider } from "react-native-safe-area-context"
@@ -17,78 +16,59 @@ import { Filters } from "../filters"
 import { dbType } from "@/src/database/localDatabase/databaseOp/db"
 import { useTabEffect } from "../../_layout"
 import { DB } from "@/src/database/localDatabase/databaseOp/db"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+
 type GetSecProps = {
-    filter: String
+    filter: String,
+    FILTERS: object[],
+    data: dbType[]
 }
 
 type AllNotesProps = {
     id: number,
 }
 
+ export type notesSec = {
+    id: number,
+    noteName: string,
+    noteContent: string,
+    noteDate: string,
+    section: string,
+    color: string
+}
+
 
 // const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
 
-function GetSec({filter}: GetSecProps) {
- 
-    const [newObjectData, setNewObjectData] = useState<{id: number, noteName: string, noteContent: string, noteDate: string, section: string, color: string}[]>([])
+function GetSec({filter, FILTERS, data}: GetSecProps) {
+
     const [pressedId, setPressedId] = useState<number>()
     const [isOpen, setIsOpen] = useState<boolean>(false)
-    const [noteArraybySec, setArraySec] = useState<dbType[]>()
+    const [arraybySec, setArraySec] = useState<dbType[]>([])
     const [modalVisible, setModalVisible] = useState(false);
-    const [noteArray, setNoteArray] =  useState<dbType[]>([])
+    const [noteArray, setNoteArray] =  useState<dbType[]>()
     const [idDel, setIdDel] = useState<number>()
+    const [newObjectData, setNewObjectData] = useState<dbType[]>()
 
-    for ( let c = 0; c < noteArray.length; c++) {
-        if (noteArray[c].section == filter) {
-            newObjectData.push({id: noteArray[c].id, noteName: noteArray[c].noteName, noteContent: noteArray[c].noteContent, noteDate: noteArray[c].noteDate, section: noteArray[c].section, color: noteArray[c].color})
-        }
-    }
-
-    const expNewObjectData = newObjectData
-    const [isPressed, setIsPressed] = useState<boolean>(false)
     
-    if ( FILTERS.length > 0) {
+    if ( data.length > 0) {
 
-        async function deleteNote(id: number) {
        
-            try {
-            
-                console.log("This" + idDel)
-    
-                const response = await db.deleteNote(id)
-                console.log(response)
-                
-            } catch (error) {
-                
-            }     
-        }
-
         if (filter != "all") {
-            const db = DB()
 
-            async function fetchNote() {
-                
-                try {
-                    const response = await db.fetchNotes()
-                    console.log(response)
-
-                    if (response != null) {
-                        setNoteArray(response)
+            let a = []
+            for (let c = 0; c < data.length; c++) {
+                    if (filter == data[c].section) {
+                        a.push({id: data[c].id, noteName: data[c].noteName, noteContent: data[c].noteContent, noteDate: data[c].noteDate, color: data[c].color, seection: data[c].section});
+                        
                     }
-
-                } catch (error) {
-                    console.log(error)
-                }
-
-            }
-            useTabEffect("/", () => {
-                fetchNote()
-                console.log("Notas Carregadas")
-            });
+                    
+                } 
+           
             return (
                 
                     <FlatList
-                    data={noteArray}
+                    data={a}
                     renderItem={({item}) => (
                         <View style={styles.container}>
                             <StatusBar barStyle={"dark-content"}/>
@@ -119,49 +99,14 @@ function GetSec({filter}: GetSecProps) {
                 
             )
         } else if (filter == "all" ) {
-            const db = DB()
-
-            async function fetchNote() {
-                try {
-                    const response = await db.fetchNotes()
-                    console.log(response)
-
-                    if (response != null) {
-                        setNoteArray(response)
-                    }
-
-                } catch (error) {
-                    console.log(error)
-                }
-
-            }
-
-            async function deleteNote(id: number) {
-
-                try {
-
-                    console.log("This" + idDel)
-
-                    const response = await db.deleteNote(id)
-                    console.log(response)
-
-                } catch (error) {
-
-                }
-            }
             
-
-            useTabEffect("/", () => {
-                fetchNote()
-                console.log("Notas Carregadas")
-            });
             return (
                 <SafeAreaProvider style={{height: "100%"}}>
                     
                     <SafeAreaView >
                     <FlatList
                         
-                        data={noteArray}
+                        data={data}
                         
                         renderItem={({ item }) =>
                             <Pressable onPress={() => { console.log("mostrar nota"), router.navigate("/(Stack)/newNote/newNote")}}>
@@ -190,7 +135,7 @@ function GetSec({filter}: GetSecProps) {
                     </SafeAreaView>
 
                     <FlatList
-                    data={noteArray}
+                    data={data}
                     renderItem={({item}) =>
                         <View style={{alignItems: "center"}}>
                             <Pressable onLongPress={()=> {setModalVisible(true), setIdDel(item.id)}} style={{ minHeight: 60, marginBottom: 10, marginTop: 10}} onPress={()=>{router.navigate("/newNote/newNote"), console.log(isOpen)}}>
@@ -223,7 +168,7 @@ function GetSec({filter}: GetSecProps) {
         </SafeAreaProvider>
             )
         }     
-    } else if (FILTERS.length <= 0 || AllNotes.length == 0) {
+    } else if (FILTERS.length <= 0 && data.length == 0) {
         return (
             <SafeAreaProvider>
                 <View style={{justifyContent: "center", alignItems: "center", height: "100%"}}>
@@ -241,34 +186,150 @@ function GetSec({filter}: GetSecProps) {
         )
     }
     
-    for ( let c = 0; c < AllNotes.length; c++) {
-    
-
-        if (AllNotes[c].section == filter) {
-            
-            // newObjectData.push({id: AllNotes[c].id, noteName: AllNotes[c].noteName, noteContent: AllNotes[c].noteContent, noteDate: AllNotes[c].noteDate, noteState: AllNotes[c].noteState})
-        
-            
-        }        
-    }   
 }
 
 
 export function Components() {
 
-    const [filter, setFilter] = useState<string>(FILTERS[0])
+    const [noteArray, setNoteArray] = useState<dbType[]>([])
+    const [secLength, setLengthSec] = useState(0)
+    const [FILTERS, setFILTER] = useState<object[]>([])
+    const [dataBySec, setDataBySec] = useState<string[]>([])
+    const [index, setIndex] = useState<number>(0)
+    const [sec, setSec] = useState<String>('all')
+    const db = DB()
 
-    if (FILTERS.length <= 0) {
-        console.log("VAZIO")
+    async function saveAllFilters() {
+        try {
+            await AsyncStorage.setItem(
+                '@AllFilters:Filter',
+                JSON.stringify(["all", "section01", "section02", "section03", "section04", "section05", "section07"])
+            )
+        } catch (error) {
+            console.log(error)
+        }
     }
+
+    async function saveIndex() {
+        try {
+            await AsyncStorage.setItem(
+                '@MyIndex:Index',
+                String(sec)
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function getIndex() {
+        const result = await AsyncStorage.getItem('@MyIndex:Index') 
+        if (result != null) {
+            console.log("RESULATADO DO INDEX" + result)  
+            setIndex(parseInt(result))
+        } else (
+            console.log("nadDDDDDDDDDDa")
+        ) 
+    }
+
+    
+    
+    /*
+    useTabEffect("/", () => {
+        saveAllFilters()
+        console.log("Notas Carregadas")
+    });
+    */
+    saveAllFilters()
+
+    async function getAllData() {
+        const result = await AsyncStorage.getItem('@AllFilters:Filter') 
+        if (result != null) {
+            let resultJson = JSON.parse(result)
+            setFILTER(resultJson)
+            setLengthSec(resultJson.length)
+            setFilter(resultJson)
+            setFilterData(resultJson)  
+            
+            for (let c = 0; c < resultJson.length; c++) {
+                console.log(resultJson[c])
+                if (resultJson[c] === sec) {
+                    setFilter(resultJson[c])
+                    setSec(resultJson[c])
+                    console.log("NEWWWWWWWWWWW" + sec)
+                    console.log("KKKKKKKKKKKKKKKK" + sec)
+                    saveIndex()
+                } else {
+                    setFilter(resultJson[0])
+                }
+            }
+            
+        } else (
+            console.log("nada")
+        )
+
+        
+         
+    }
+
+    async function fetchNote() {
+        try {
+            const response = await db.fetchNotes()
+            
+            
+            if (response != null) {
+                setNoteArray(response)  
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }
+        
+    }
+
+    function verifSection(){
+        for(let c = 0; 0 < noteArray.length; c++) {
+            for (let c = 0; c < secLength; c++) {
+                
+            }
+        }
+    }
+
+   
+    useTabEffect("/", () => {
+        fetchNote()
+       
+    });
+
+    useTabEffect("/", () => {
+        getAllData()
+       
+    });
+    
+    saveIndex()
+
+
+
+
+    useTabEffect("/", () => {
+        getIndex()
+       
+    });
+
+    const [filterData, setFilterData] = useState([]) // FROM ASYNC STORAGE
+    const [filter, setFilter] = useState(sec)
+      
+
+    
+    
+    
+    
     return (
         
         <SafeAreaView style={{height: "100%"}}>
             <StatusBar barStyle={"dark-content"}/>
             <Header/>
-            <Filters filters={FILTERS} filter={filter} onChange={setFilter}/>
-            <GetSec filter={filter}/>
-            
+            <Filters filters={filterData} filter={filter} onChange={setFilter}/>
+            <GetSec FILTERS={filterData} filter={filter} data={noteArray}/>
         </SafeAreaView>  
     )
 }
@@ -391,3 +452,16 @@ const styles2 = StyleSheet.create({
 
 
 
+
+
+/*
+
+IMPORTANT
+
+useTabEffect("/", () => {
+    getAllData()
+    console.log("Notas Carregadas")
+});
+
+
+*/

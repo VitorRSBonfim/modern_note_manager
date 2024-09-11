@@ -20,7 +20,6 @@ import { Button } from "react-native"
 import { TextInput } from "react-native";
 import { styles } from "../filter/style";
 import { FlatList } from "react-native";
-import { FILTERS } from "@/src/database/staticData/filter/filterData";
 import { AllNotes } from "@/src/database/staticData/recents/recentsData";
 import { Picker } from "@react-native-picker/picker";
 import { StatusBar } from "react-native";
@@ -29,6 +28,7 @@ import { COLORS } from "@/src/database/staticData/colors/color";
 import { useTabEffect } from "../../_layout";
 import { Alert } from "react-native";
 import { usePathname } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 /*
 export function clearByRoute() {
     const path = usePathname()
@@ -37,42 +37,7 @@ export function clearByRoute() {
 clearByRoute()
 */
 
-function Ga(){
-    const newArray = []
-    for (let c = 0; FILTERS.length; c++) {
-        newArray.push(FILTERS[c])
-        return (
-            <Picker.Item label={String(FILTERS[c])} value={String(FILTERS[c])} />
-        )
-    }
-    
-}
 
-
-function GetByFilter(){
-    const [selectedLanguage, setSelectedLanguage] = useState();
-    
-    return (
-        <Picker
-            selectedValue={selectedLanguage}
-            onValueChange={(itemValue, itemIndex) =>
-                setSelectedLanguage(itemValue)
-            }>
-            <Ga/>
-        </Picker> 
-    )
-}
-
-function VerifContent(noteName: string, noteContent: string){
-    if (noteName == "" && noteContent == "") {
-        return (
-            Alert.alert(
-                'title',
-                'msg'
-            )
-        )
-    }
-}
 
 export function FormAddNote() {
     const [isModalVisible, setModalVisible] = useState(false);
@@ -88,7 +53,7 @@ export function FormAddNote() {
     const fullDate = currentyDay + "/" + (currentyMonth + 1) + "/" + currentyYear
     console.log(currentyDay, currentyMonth, currentyYear)
     const [noteDate, setNoteDate] = useState(fullDate)
-    const [section, setSection] = useState("all")
+    const [section, setSection] = useState("section03")
     const [hasContent, setHasContent] = useState<boolean>(false)
     
 
@@ -106,8 +71,12 @@ export function FormAddNote() {
         }
     }    
   
-    console.log(color)
-    console.log(COLORS)
+    useTabEffect("/newNote", () => {
+        setColor(COLORS[0])
+
+    });
+
+    
 
     return (
         <View>
