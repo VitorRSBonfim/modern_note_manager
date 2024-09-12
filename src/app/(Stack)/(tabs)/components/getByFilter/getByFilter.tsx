@@ -21,12 +21,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 type GetSecProps = {
     filter: String,
     FILTERS: object[],
-    data: dbType[]
+    data: dbType[],
+    updateNote: VoidFunction 
 }
 
 type AllNotesProps = {
     id: number,
 }
+
+
 
  export type notesSec = {
     id: number,
@@ -38,9 +41,11 @@ type AllNotesProps = {
 }
 
 
+
+
 // const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
 
-function GetSec({filter, FILTERS, data}: GetSecProps) {
+function GetSec({filter, FILTERS, data, updateNote}: GetSecProps) {
 
     const [pressedId, setPressedId] = useState<number>()
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -49,22 +54,40 @@ function GetSec({filter, FILTERS, data}: GetSecProps) {
     const [noteArray, setNoteArray] =  useState<dbType[]>()
     const [idDel, setIdDel] = useState<number>()
     const [newObjectData, setNewObjectData] = useState<dbType[]>()
+    const [filterData, setFilterData] = useState<dbType[]>([])
+    const db = DB()
 
+    async function deleteNote(id: number) {
+        try {
+            const response = await db.deleteNote(id) 
+        } catch (error) {
+            
+        }     
+    }
     
+    async function fetchAgain() {
+        try {
+            const response = await db.fetchNotes()
+            setNoteArray(response)
+        } catch (error) {
+            console.log("ERROR ON CATCH AGAIN" + error)
+        }
+    }
+
     if ( data.length > 0) {
 
+        let a = []
        
         if (filter != "all") {
 
-            let a = []
             for (let c = 0; c < data.length; c++) {
-                    if (filter == data[c].section) {
-                        a.push({id: data[c].id, noteName: data[c].noteName, noteContent: data[c].noteContent, noteDate: data[c].noteDate, color: data[c].color, seection: data[c].section});
-                        
-                    }
-                    
-                } 
+                if (data[c].section == filter) {
+                    a.push({id: data[c].id, noteName: data[c].noteName, noteContent: data[c].noteContent, noteDate: data[c].noteDate, section: data[c].section, color: data[c].color})    
+                }
+                
+            }
            
+            
             return (
                 
                     <FlatList
@@ -118,7 +141,7 @@ function GetSec({filter, FILTERS, data}: GetSecProps) {
                                         {item.noteContent}
                                     </Text>
                                     <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexDirection: "row" }}>
-                                        <Pressable style={styles2.containerPressableDelete} onPress={() => { setIdDel(item.id), deleteNote(item.id), fetchNote(),console.log(typeof (item.id)) }}>
+                                        <Pressable style={styles2.containerPressableDelete} onPress={() => { setIdDel(item.id), deleteNote(item.id), updateNote(), fetchAgain(),console.log(typeof (item.id)) }}>
                                             <MaterialCommunityIcons name="delete-empty-outline" size={20} color={item.color} />
                                         </Pressable>
                                         <Text style={{ marginRight: 4, color: "#FFFFFF", fontSize: 12 }}>{item.noteDate}</Text>
@@ -196,43 +219,31 @@ export function Components() {
     const [FILTERS, setFILTER] = useState<object[]>([])
     const [dataBySec, setDataBySec] = useState<string[]>([])
     const [index, setIndex] = useState<number>(0)
-    const [sec, setSec] = useState<String>('all')
+    const [currentySec, setCurrentySec] = useState<String>('all')
     const db = DB()
+
+    async function saveSec(Sec: String) {
+        try {
+            await AsyncStorage.setItem(
+                '@CurrSec:Sec',
+                String(Sec)
+            )
+        } catch (error) {
+            console.log("ERRO AO SLAVAR SEC" + error)
+        }
+    }
 
     async function saveAllFilters() {
         try {
             await AsyncStorage.setItem(
                 '@AllFilters:Filter',
-                JSON.stringify(["all", "section01", "section02", "section03", "section04", "section05", "section07"])
+                JSON.stringify(["all", "section03"])
             )
         } catch (error) {
             console.log(error)
         }
     }
 
-    async function saveIndex() {
-        try {
-            await AsyncStorage.setItem(
-                '@MyIndex:Index',
-                String(sec)
-            )
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async function getIndex() {
-        const result = await AsyncStorage.getItem('@MyIndex:Index') 
-        if (result != null) {
-            console.log("RESULATADO DO INDEX" + result)  
-            setIndex(parseInt(result))
-        } else (
-            console.log("nadDDDDDDDDDDa")
-        ) 
-    }
-
-    
-    
     /*
     useTabEffect("/", () => {
         saveAllFilters()
@@ -247,28 +258,11 @@ export function Components() {
             let resultJson = JSON.parse(result)
             setFILTER(resultJson)
             setLengthSec(resultJson.length)
-            setFilter(resultJson)
-            setFilterData(resultJson)  
-            
-            for (let c = 0; c < resultJson.length; c++) {
-                console.log(resultJson[c])
-                if (resultJson[c] === sec) {
-                    setFilter(resultJson[c])
-                    setSec(resultJson[c])
-                    console.log("NEWWWWWWWWWWW" + sec)
-                    console.log("KKKKKKKKKKKKKKKK" + sec)
-                    saveIndex()
-                } else {
-                    setFilter(resultJson[0])
-                }
-            }
-            
+     
         } else (
             console.log("nada")
         )
 
-        
-         
     }
 
     async function fetchNote() {
@@ -278,6 +272,7 @@ export function Components() {
             
             if (response != null) {
                 setNoteArray(response)  
+                console.log(response)
             }
             
         } catch (error) {
@@ -285,15 +280,6 @@ export function Components() {
         }
         
     }
-
-    function verifSection(){
-        for(let c = 0; 0 < noteArray.length; c++) {
-            for (let c = 0; c < secLength; c++) {
-                
-            }
-        }
-    }
-
    
     useTabEffect("/", () => {
         fetchNote()
@@ -304,32 +290,17 @@ export function Components() {
         getAllData()
        
     });
-    
-    saveIndex()
 
-
-
-
-    useTabEffect("/", () => {
-        getIndex()
-       
-    });
-
-    const [filterData, setFilterData] = useState([]) // FROM ASYNC STORAGE
-    const [filter, setFilter] = useState(sec)
+    const [filter, setFilter] = useState('all')
       
-
-    
-    
-    
     
     return (
         
         <SafeAreaView style={{height: "100%"}}>
             <StatusBar barStyle={"dark-content"}/>
             <Header/>
-            <Filters filters={filterData} filter={filter} onChange={setFilter}/>
-            <GetSec FILTERS={filterData} filter={filter} data={noteArray}/>
+            <Filters filters={FILTERS} filter={filter} onChange={setFilter}/>
+            <GetSec FILTERS={FILTERS} filter={filter} data={noteArray} updateNote={fetchNote} />
         </SafeAreaView>  
     )
 }
