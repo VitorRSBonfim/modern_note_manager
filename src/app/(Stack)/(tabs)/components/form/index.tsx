@@ -53,7 +53,7 @@ export function FormAddNote() {
     const fullDate = currentyDay + "/" + (currentyMonth + 1) + "/" + currentyYear
     console.log(currentyDay, currentyMonth, currentyYear)
     const [noteDate, setNoteDate] = useState(fullDate)
-    const [section, setSection] = useState("section03")
+    const [section, setSection] = useState("all")
     const [hasContent, setHasContent] = useState<boolean>(false)
     
 
@@ -64,7 +64,7 @@ export function FormAddNote() {
             if (result != null) {
                 setNoteName("")
                 setNoteContent("")
-                router.navigate("/(Stack)/(tabs)/")
+                router.back()
             }
         } catch (error) {
             
@@ -75,6 +75,19 @@ export function FormAddNote() {
         setColor(COLORS[0])
 
     });
+
+    async function saveAllFilters() {
+        try {
+            await AsyncStorage.setItem(
+                '@AllFilters:Filter',
+                JSON.stringify(["all"])
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
 
     
 
@@ -117,7 +130,7 @@ export function FormAddNote() {
                 </View>
             </Modal>
             <View style={[style.containerHeader]}>
-                <Pressable style={[noteName != "" && style.containerBtnSave,  noteContent != "" && style.containerBtnSave]} onPress={insertNotes}>
+                <Pressable style={[noteName != "" && style.containerBtnSave,  noteContent != "" && style.containerBtnSave]} onPress={()=>{insertNotes(), saveAllFilters()}}>
                     <Text style={style.txtHeader}>
                         Salvar
                     </Text>

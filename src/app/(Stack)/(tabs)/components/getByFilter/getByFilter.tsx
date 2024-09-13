@@ -6,7 +6,7 @@ import { StyleSheet } from "react-native"
 import { Pressable } from "react-native"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { useEffect, useState } from "react"
-import { router } from "expo-router"
+import { router, usePathname } from "expo-router"
 import { Init } from "./init"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { SafeAreaProvider } from "react-native-safe-area-context"
@@ -22,7 +22,7 @@ type GetSecProps = {
     filter: String,
     FILTERS: object[],
     data: dbType[],
-    updateNote: VoidFunction 
+    updateNote: VoidFunction
 }
 
 type AllNotesProps = {
@@ -31,7 +31,7 @@ type AllNotesProps = {
 
 
 
- export type notesSec = {
+export type notesSec = {
     id: number,
     noteName: string,
     noteContent: string,
@@ -45,13 +45,15 @@ type AllNotesProps = {
 
 // const currentyDate = date.getDate()  + "/" + date.getDay() + "/" + date.getFullYear()
 
-function GetSec({filter, FILTERS, data, updateNote}: GetSecProps) {
+function GetSec({ filter, FILTERS, data, updateNote }: GetSecProps) {
+
+    console.log(FILTERS)
 
     const [pressedId, setPressedId] = useState<number>()
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [arraybySec, setArraySec] = useState<dbType[]>([])
     const [modalVisible, setModalVisible] = useState(false);
-    const [noteArray, setNoteArray] =  useState<dbType[]>()
+    const [noteArray, setNoteArray] = useState<dbType[]>()
     const [idDel, setIdDel] = useState<number>()
     const [newObjectData, setNewObjectData] = useState<dbType[]>()
     const [filterData, setFilterData] = useState<dbType[]>([])
@@ -59,12 +61,14 @@ function GetSec({filter, FILTERS, data, updateNote}: GetSecProps) {
 
     async function deleteNote(id: number) {
         try {
-            const response = await db.deleteNote(id) 
+            const response = await db.deleteNote(id)
         } catch (error) {
-            
-        }     
+
+        }
     }
-    
+
+
+
     async function fetchAgain() {
         try {
             const response = await db.fetchNotes()
@@ -74,141 +78,141 @@ function GetSec({filter, FILTERS, data, updateNote}: GetSecProps) {
         }
     }
 
-    if ( data.length > 0) {
+    if (data.length > 0) {
 
         let a = []
-       
+
         if (filter != "all") {
 
             for (let c = 0; c < data.length; c++) {
                 if (data[c].section == filter) {
-                    a.push({id: data[c].id, noteName: data[c].noteName, noteContent: data[c].noteContent, noteDate: data[c].noteDate, section: data[c].section, color: data[c].color})    
+                    a.push({ id: data[c].id, noteName: data[c].noteName, noteContent: data[c].noteContent, noteDate: data[c].noteDate, section: data[c].section, color: data[c].color })
                 }
-                
-            }
-           
-            
-            return (
-                
-                    <FlatList
-                    data={a}
-                    renderItem={({item}) => (
-                        <View style={styles.container}>
-                            <StatusBar barStyle={"dark-content"}/>
-                            <Pressable onPress={() => {router.navigate("/(Stack)/newNote/newNote"), console.log("tasks")}}>
-                            <View style={styles.containerNote}>
-                                <View style={{flexDirection: "row", maxWidth: "90%"}}>
-                                    <View style={{width: 8,backgroundColor: item.color, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}>
-                    
-                                    </View>
-                                    <View style={styles.containerContent}>
-                                        <Text style={styles.contentTittle}>
-                                            {item.noteName}
-                                        </Text>
-                                        <Text style={styles.contentSub}>
-                                            {item.noteContent}
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={{alignContent: "flex-end", justifyContent: "flex-end"}}>
-                                    <Text style={{fontSize: 10, marginRight: 4, marginBottom: 4}}>
-                                        {item.noteDate}
-                                    </Text>
-                                </View>
-                                </View>
-                            </Pressable>
-                        </View>
-                    )}/>
-                
-            )
-        } else if (filter == "all" ) {
-            
-            return (
-                <SafeAreaProvider style={{height: "100%"}}>
-                    
-                    <SafeAreaView >
-                    <FlatList
-                        
-                        data={data}
-                        
-                        renderItem={({ item }) =>
-                            <Pressable onPress={() => { console.log("mostrar nota"), router.navigate("/(Stack)/newNote/newNote")}}>
-                                <View style={[styles2.containerNote, { backgroundColor: item.color }]}>
-                                    <Text style={styles2.txtNoteTittle}>
-                                        {item.noteName}
-                                    </Text>
-                                    <Text style={styles2.txtNoteContent}>
-                                        {item.noteContent}
-                                    </Text>
-                                    <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexDirection: "row" }}>
-                                        <Pressable style={styles2.containerPressableDelete} onPress={() => { setIdDel(item.id), deleteNote(item.id), updateNote(), fetchAgain(),console.log(typeof (item.id)) }}>
-                                            <MaterialCommunityIcons name="delete-empty-outline" size={20} color={item.color} />
-                                        </Pressable>
-                                        <Text style={{ marginRight: 4, color: "#FFFFFF", fontSize: 12 }}>{item.noteDate}</Text>
-                                    </View>
-                                </View>
-                            </Pressable>
-                        }
-                        keyExtractor={item => String(item.id)}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles2.containerList}
-                        
-                    />
-                    </SafeAreaView>
 
-                    <FlatList
-                    data={data}
-                    renderItem={({item}) =>
-                        <View style={{alignItems: "center"}}>
-                            <Pressable onLongPress={()=> {setModalVisible(true), setIdDel(item.id)}} style={{ minHeight: 60, marginBottom: 10, marginTop: 10}} onPress={()=>{router.navigate("/newNote/newNote"), console.log(isOpen)}}>
-                                <View  style={styles2.containerNote2}>
-                                    <View style={{flexDirection: "row", maxWidth: "90%"}}>
-                                        <View style={{width: 8,backgroundColor: item.color, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}>
-        
+            }
+
+
+            return (
+
+                <FlatList
+                    data={a}
+                    renderItem={({ item }) => (
+                        <View style={styles.container}>
+                            <StatusBar barStyle={"dark-content"} />
+                            <Pressable onPress={() => { router.navigate("/(Stack)/newNote/newNote"), console.log("tasks") }}>
+                                <View style={styles.containerNote}>
+                                    <View style={{ flexDirection: "row", maxWidth: "90%" }}>
+                                        <View style={{ width: 8, backgroundColor: item.color, borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}>
+
                                         </View>
-                                        <View style={styles2.containerContent}>
-                                            <Text style={styles2.contentTittle}>
+                                        <View style={styles.containerContent}>
+                                            <Text style={styles.contentTittle}>
                                                 {item.noteName}
                                             </Text>
-                                            <Text style={styles2.contentSub}>
+                                            <Text style={styles.contentSub}>
                                                 {item.noteContent}
                                             </Text>
                                         </View>
                                     </View>
-                                    <View style={{alignContent: "flex-end", justifyContent: "flex-end"}}>
-                                        <Text style={{fontSize: 10, marginRight: 4, marginBottom: 4}}>
+                                    <View style={{ alignContent: "flex-end", justifyContent: "flex-end" }}>
+                                        <Text style={{ fontSize: 10, marginRight: 4, marginBottom: 4 }}>
                                             {item.noteDate}
                                         </Text>
                                     </View>
-                                    </View>
+                                </View>
                             </Pressable>
                         </View>
-                    }
-                    keyExtractor={item => String(item.id)}
-                    showsVerticalScrollIndicator={false}
-                />
-        </SafeAreaProvider>
+                    )} />
+
             )
-        }     
+        } else if (filter == "all") {
+
+            return (
+                <SafeAreaProvider style={{ height: "100%" }}>
+
+                    <SafeAreaView >
+                        <FlatList
+
+                            data={data}
+
+                            renderItem={({ item }) =>
+                                <Pressable onPress={() => { console.log("mostrar nota"), router.navigate("/(Stack)/newNote/newNote") }}>
+                                    <View style={[styles2.containerNote, { backgroundColor: item.color }]}>
+                                        <Text style={styles2.txtNoteTittle}>
+                                            {item.noteName}
+                                        </Text>
+                                        <Text style={styles2.txtNoteContent}>
+                                            {item.noteContent}
+                                        </Text>
+                                        <View style={{ flex: 1, alignItems: "flex-end", justifyContent: "space-between", width: "100%", flexDirection: "row" }}>
+                                            <Pressable style={styles2.containerPressableDelete} onPress={() => { setIdDel(item.id), deleteNote(item.id), updateNote(), fetchAgain(), console.log(typeof (item.id)) }}>
+                                                <MaterialCommunityIcons name="delete-empty-outline" size={20} color={item.color} />
+                                            </Pressable>
+                                            <Text style={{ marginRight: 4, color: "#FFFFFF", fontSize: 12 }}>{item.noteDate}</Text>
+                                        </View>
+                                    </View>
+                                </Pressable>
+                            }
+                            keyExtractor={item => String(item.id)}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles2.containerList}
+
+                        />
+                    </SafeAreaView>
+
+                    <FlatList
+                        data={data}
+                        renderItem={({ item }) =>
+                            <View style={{ alignItems: "center" }}>
+                                <Pressable onLongPress={() => { setModalVisible(true), setIdDel(item.id) }} style={{ minHeight: 60, marginBottom: 10, marginTop: 10 }} onPress={() => { router.navigate("/newNote/newNote"), console.log(isOpen) }}>
+                                    <View style={styles2.containerNote2}>
+                                        <View style={{ flexDirection: "row", maxWidth: "90%" }}>
+                                            <View style={{ width: 8, backgroundColor: item.color, borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}>
+
+                                            </View>
+                                            <View style={styles2.containerContent}>
+                                                <Text style={styles2.contentTittle}>
+                                                    {item.noteName}
+                                                </Text>
+                                                <Text style={styles2.contentSub}>
+                                                    {item.noteContent}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View style={{ alignContent: "flex-end", justifyContent: "flex-end" }}>
+                                            <Text style={{ fontSize: 10, marginRight: 4, marginBottom: 4 }}>
+                                                {item.noteDate}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </Pressable>
+                            </View>
+                        }
+                        keyExtractor={item => String(item.id)}
+                        showsVerticalScrollIndicator={false}
+                    />
+                </SafeAreaProvider>
+            )
+        }
     } else if (FILTERS.length <= 0 && data.length == 0) {
         return (
             <SafeAreaProvider>
-                <View style={{justifyContent: "center", alignItems: "center", height: "100%"}}>
-                    <Text style={{fontSize: 60, color: "#524B63"}}>
+                <View style={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
+                    <Text style={{ fontSize: 60, color: "#524B63" }}>
                         精
                     </Text>
-                    <Text style={{fontSize: 60, color: "#524B63"}}>
+                    <Text style={{ fontSize: 60, color: "#524B63" }}>
                         神
                     </Text>
-                    <Text style={{fontWeight: "light", color: "#343239"}}>
+                    <Text style={{ fontWeight: "light", color: "#343239" }}>
                         No one note
                     </Text>
                 </View>
             </SafeAreaProvider>
         )
     }
-    
+
 }
 
 
@@ -216,33 +220,24 @@ export function Components() {
 
     const [noteArray, setNoteArray] = useState<dbType[]>([])
     const [secLength, setLengthSec] = useState(0)
-    const [FILTERS, setFILTER] = useState<object[]>([])
+    const [FILTERS, setFILTER] = useState<[]>([])
     const [dataBySec, setDataBySec] = useState<string[]>([])
     const [index, setIndex] = useState<number>(0)
-    const [currentySec, setCurrentySec] = useState<String>('all')
+    const [currentySec, setCurrentySec] = useState<String>()
     const db = DB()
 
     async function saveSec(Sec: String) {
         try {
             await AsyncStorage.setItem(
                 '@CurrSec:Sec',
-                String(Sec)
+                ''
             )
         } catch (error) {
             console.log("ERRO AO SLAVAR SEC" + error)
         }
     }
 
-    async function saveAllFilters() {
-        try {
-            await AsyncStorage.setItem(
-                '@AllFilters:Filter',
-                JSON.stringify(["all", "section03"])
-            )
-        } catch (error) {
-            console.log(error)
-        }
-    }
+
 
     /*
     useTabEffect("/", () => {
@@ -250,58 +245,65 @@ export function Components() {
         console.log("Notas Carregadas")
     });
     */
-    saveAllFilters()
 
-    async function getAllData() {
-        const result = await AsyncStorage.getItem('@AllFilters:Filter') 
+
+    const getAllData = async () => {
+        const result = await AsyncStorage.getItem('@AllFilters:Filter')
+        console.log("MAINNNN" + noteArray.length)
         if (result != null) {
+
+
             let resultJson = JSON.parse(result)
             setFILTER(resultJson)
             setLengthSec(resultJson.length)
-     
-        } else (
-            console.log("nada")
-        )
 
+        }
     }
+
+
 
     async function fetchNote() {
         try {
             const response = await db.fetchNotes()
-            
-            
+
             if (response != null) {
-                setNoteArray(response)  
-                console.log(response)
+                setNoteArray(response)
             }
-            
+
         } catch (error) {
             console.log(error)
         }
-        
+
     }
-   
+
+
     useTabEffect("/", () => {
+
         fetchNote()
-       
+
     });
 
     useTabEffect("/", () => {
         getAllData()
-       
+
     });
 
+
+
     const [filter, setFilter] = useState('all')
-      
-    
+
+    if (noteArray.length == 0) {
+        getAllData()
+    }
+
     return (
-        
-        <SafeAreaView style={{height: "100%"}}>
-            <StatusBar barStyle={"dark-content"}/>
-            <Header/>
-            <Filters filters={FILTERS} filter={filter} onChange={setFilter}/>
+
+        <SafeAreaView style={{ height: "100%" }}>
+            <StatusBar barStyle={"dark-content"} />
+            <Header />
+            <Filters filters={FILTERS} filter={filter} onChange={setFilter} />
             <GetSec FILTERS={FILTERS} filter={filter} data={noteArray} updateNote={fetchNote} />
-        </SafeAreaView>  
+        </SafeAreaView>
     )
 }
 
@@ -309,7 +311,7 @@ export function Components() {
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
-        
+
     },
     containerNote: {
         minHeight: 80,
@@ -322,7 +324,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     containerContent: {
-        
+
     },
     contentTittle: {
         fontSize: 20,
@@ -378,7 +380,7 @@ const styles2 = StyleSheet.create({
         marginBottom: 4
     },
     containerContent: {
-        
+
     },
     contentTittle: {
         fontSize: 20,
@@ -407,19 +409,19 @@ const styles2 = StyleSheet.create({
     },
     container: {
         alignItems: "center",
-        
+
     },
     containerNote2: {
         minHeight: 80,
         width: "90%",
         backgroundColor: "#FFFFFF",
-        
+
         borderRadius: 10,
-        
+
         flexDirection: "row",
         justifyContent: "space-between",
     },
-}) 
+})
 
 
 
